@@ -10,8 +10,9 @@ from pager.page_model.sub_models import RowsModel, PDFModel, WordsAndStylesModel
 from pager.page_model.sub_models.converters import PDF2Rows
 from pager.page_model.sub_models import PhisicalModel, WordsAndStylesToGLAMBlocks,WordsAndStylesToSpGraph4N
 from pager import PageModel, PageModelUnit, WordsAndStylesModel, SpGraph4NModel, RowToSpGraph4N
-from pager.page_model.sub_models.dtype import ImageSegment, Word
+from pager.page_model.sub_models.dtype import ImageSegment, Word, Row
 from pager.page_model.sub_models.converters import PDF2Img, PDF2OnlyFigBlocks
+from pager.page_model.sub_models.base_sub_model import BaseConverter
 import numpy as np
 import os
 from typing import List
@@ -21,25 +22,23 @@ from .torch_model import TorchModel
 from dotenv import load_dotenv
 load_dotenv(override=True)
 
-PUBLAYNET_IMBALANCE=[2.63, 0.015, 0.946, 1.268, 0.136]
-EDGE_IMBALANCE=0.14
-EDGE_COEF=0.25
-NODE_COEF=0.75
+PUBLAYNET_IMBALANCE=[1.57, 0.03, 0.81, 2.39, 0.18]#[2.63, 0.015, 0.946, 1.268, 0.136]
+EDGE_IMBALANCE=0.41 #0.14
+EDGE_COEF=4
+NODE_COEF=1
 
 WITH_TEXT = True
 # TYPE_GRAPH = "4N"
 EXPERIMENT_PARAMS = {
-    "node_featch": 47,
+    "node_featch": 13,
     "edge_featch": 2,
-    "epochs": 30,
-    "batch_size": 80,
+    "epochs": 50,
+    "batch_size": 50,
     "learning_rate": 0.005,
-    "Tag": [{ "in": -1, "size": 256, "out": 256, "k":2},
-            { "in": 256, "size": 128, "out": 128, "k":2},
-            { "in": 128, "size": 64, "out": 64, "k":2},
-            { "in": 64, "size": 32, "out": 32, "k":2}],
-    "NodeLinear": [-1, 16, 8],
-    "EdgeLinear": [8],
+    "Tag": [{ "in": -1, "size": 512, "out": 256, "k":3},
+            { "in": 256, "size": 128, "out": 64, "k":3}],
+    "NodeLinear": [-1, 32, 16],
+    "EdgeLinear": [16],
     "NodeClasses": 5,
     "batchNormNode": True,
     "batchNormEdge": True,
@@ -186,7 +185,8 @@ def edges_feature(A, rows):
 
 class JsonWithFeatchsExtractor(BaseExtractor):
     def extract(self, json_with_featchs: JsonWithFeatchs):
-
+        json_with_featchs.add_featchs(lambda: featch_rows(json_with_featchs.name_file), names=['rows'], 
+                                is_reupdate=False, rewrite=False)
         json_with_featchs.add_featchs(lambda: featch_A(json_with_featchs.json['rows']), names=['A'], 
                             is_reupdate=False, rewrite=False)
         
@@ -195,6 +195,8 @@ class JsonWithFeatchsExtractor(BaseExtractor):
         
         json_with_featchs.add_featchs(lambda: edges_feature(json_with_featchs.json['A'], json_with_featchs.json['rows']), names=['edges_feature'], 
                             is_reupdate=False, rewrite=False) 
+        
+        
 
 class JsonWithFeatchsWithRead(JsonWithFeatchs):
     def read_from_file(self, path_file):
@@ -206,6 +208,8 @@ def get_tensor_from_graph(graph):
     i = graph["A"]
     v_in = [1 for e in graph["edges_feature"]]
     y = graph["edges_feature"]
+    for yi in y:
+        yi[0] = 1.0 if yi[0] > 0.86 else 0.0
     x = graph["nodes_feature"]
     N = len(x)
     
@@ -226,7 +230,7 @@ def get_tensor_from_graph(graph):
 from pager.page_model.sub_models.dtype import Graph, Block 
 from pager.page_model.sub_models.utils import merge_segment
 
-class Json2Blocks():
+class Json2Blocks(BaseConverter):
     def __init__(self, conf):
         self.seg_k = conf['seg_k'] if "seg_k" in conf.keys() else 0.5
         self.spgraph = SpGraph4NModel()
@@ -242,8 +246,10 @@ class Json2Blocks():
             "nodes_feature": input_model.json["nodes_feature"], 
             "edges_feature": input_model.json["edges_feature"]
         } 
-        rows = [Word(w) for w in input_model.json["rows"]]
+        rows = [Row(r) for r in input_model.json["rows"]]
         self.set_output_block(output_model, rows, graph)
+        for block in output_model.blocks:
+            block.words = [Word(row.to_dict()) for row in  block.rows]
     
     
     def set_output_block(self, output_model, rows, graph):
@@ -278,10 +284,9 @@ class Json2Blocks():
             #         skip = True
             # if skip:
             #     continue
-            block.set_rows_from_dict(row_)
+            block.set_rows_from_dict(rows_)
             
             output_model.blocks.append(block)
-
         if len(output_model.blocks) == 0:
             return 
         
@@ -296,7 +301,6 @@ class Json2Blocks():
             block.rows = [r for b in blocks for r in b.rows]
             # block.sort_words()
             new_blocks.append(block)
-
         output_model.blocks = new_blocks
         self.set_label_output_block(output_model, rows, graph)
     
@@ -344,11 +348,11 @@ def get_img2phis(conf):
                         sub_model=PhisicalModel(), 
                         extractors=[], 
                         converters={"json_model": Json2Blocks(conf=conf), 
-                                    "pdf": PDF2OnlyFigBlocks()
+                                    # "pdf": PDF2OnlyFigBlocks()
                                     })
     return PageModel(page_units=[
         json_model,
-        unit_pdf,
+        # unit_pdf,
         unit_phis
     ])
 
