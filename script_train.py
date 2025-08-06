@@ -291,4 +291,10 @@ if __name__ == "__main__":
         restart_num = load_checkpoint(model, GLAM_MODEL)
     
     start_epoch = 0 if restart_num is None else (restart_num+1)*SAVE_FREQUENCY
-    train_model(PARAMS, model, dataset, save_frequency=SAVE_FREQUENCY, start_epoch=start_epoch)
+
+    train_dataset, val_dataset = split_index_train_val(dataset, val_split=0.1, batch_size=32)
+    batch = [dataset[ind] for ind in train_dataset[0]]
+    data_graph_dict = get_tensor_from_graph(batch[0])
+    print(batch[0].keys())
+    print(data_graph_dict)
+    # train_model(PARAMS, model, dataset, save_frequency=SAVE_FREQUENCY, start_epoch=start_epoch)
