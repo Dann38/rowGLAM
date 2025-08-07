@@ -1,0 +1,100 @@
+2025-08-07 12:10:22.079139
+DATASET INFO:
+count row: 1000
+first: dict_keys(['file_name', 'height', 'id', 'width', 'blocks', 'rows', 'A', 'nodes_feature', 'edges_feature', 'true_edges', 'true_nodes'])
+	 A:(2, 211)
+	 nodes_feature:(78, 13)
+	 edges_feature:(211, 2)
+	 true_edges:(211,)
+	 true_nodes:(78,)
+end:dict_keys(['file_name', 'height', 'id', 'width', 'blocks', 'rows', 'A', 'nodes_feature', 'edges_feature', 'true_edges', 'true_nodes'])
+	 A(2, 302)
+	 nodes_feature:(112, 13)
+	 edges_feature:(302, 2)
+	 true_edges:"(302,)
+	 true_nodes:(112,)
+
+node_featch:	13
+edge_featch:	2
+epochs:	20
+batch_size:	50
+learning_rate:	0.005
+Tag:	[{'in': -1, 'size': 512, 'out': 256, 'k': 3}, {'in': 256, 'size': 128, 'out': 64, 'k': 3}]
+NodeLinear:	[-1, 32, 16]
+EdgeLinear:	[16]
+NodeClasses:	5
+batchNormNode:	True
+batchNormEdge:	True
+seg_k:	0.5
+loss_params:	{'publaynet_imbalance': [1.57, 0.03, 0.81, 2.39, 0.18], 'edge_imbalance': 0.41, 'edge_coef': 4, 'node_coef': 1}
+EPOCH #0	 1.42749639 (VAL: 1.02528503)
+EPOCH #1	 0.91705350 (VAL: 0.79289919)
+EPOCH #2	 0.75821460 (VAL: 0.67852991)
+EPOCH #3	 0.65845413 (VAL: 0.60681846)
+EPOCH #4	 0.58672576 (VAL: 0.54683114)
+EPOCH #5	 0.52372339 (VAL: 0.49853249)
+EPOCH #6	 0.46588622 (VAL: 0.46323878)
+EPOCH #7	 0.42454622 (VAL: 0.43759372)
+EPOCH #8	 0.39503058 (VAL: 0.42393272)
+EPOCH #9	 0.36340246 (VAL: 0.42213362)
+EPOCH #10	 0.34281710 (VAL: 0.42391857)
+EPOCH #11	 0.31910803 (VAL: 0.39557182)
+EPOCH #12	 0.30134839 (VAL: 0.39853422)
+EPOCH #13	 0.28422341 (VAL: 0.41406444)
+EPOCH #14	 0.26144481 (VAL: 0.44099726)
+EPOCH #15	 0.25423497 (VAL: 0.45454865)
+EPOCH #16	 0.24205440 (VAL: 0.47025214)
+EPOCH #17	 0.23270175 (VAL: 0.40846632)
+EPOCH #18	 0.21696752 (VAL: 0.44683568)
+EPOCH #19	 0.20071477 (VAL: 0.42515648)
+Время обучения: 143.72 сек
+2025-08-07 13:54:04.694410
+DATASET INFO:
+count row: 1000
+first: dict_keys(['file_name', 'height', 'id', 'width', 'blocks', 'rows', 'A', 'nodes_feature', 'edges_feature', 'true_edges', 'true_nodes'])
+	 A:(2, 211)
+	 nodes_feature:(78, 15)
+	 edges_feature:(211, 2)
+	 true_edges:(211,)
+	 true_nodes:(78,)
+end:dict_keys(['file_name', 'height', 'id', 'width', 'blocks', 'rows', 'A', 'nodes_feature', 'edges_feature', 'true_edges', 'true_nodes'])
+	 A(2, 302)
+	 nodes_feature:(112, 15)
+	 edges_feature:(302, 2)
+	 true_edges:"(302,)
+	 true_nodes:(112,)
+
+node_featch:	15
+edge_featch:	2
+epochs:	20
+batch_size:	50
+learning_rate:	0.005
+Tag:	[{'in': -1, 'size': 512, 'out': 256, 'k': 3}, {'in': 256, 'size': 128, 'out': 64, 'k': 3}]
+NodeLinear:	[-1, 32, 16]
+EdgeLinear:	[16]
+NodeClasses:	5
+batchNormNode:	True
+batchNormEdge:	True
+seg_k:	0.5
+loss_params:	{'publaynet_imbalance': [1.57, 0.03, 0.81, 2.39, 0.18], 'edge_imbalance': 0.41, 'edge_coef': 4, 'node_coef': 1}
+EPOCH #0	 1.40650580 (VAL: 1.00902083)
+EPOCH #1	 0.87774729 (VAL: 0.72928951)
+EPOCH #2	 0.70842308 (VAL: 0.63091871)
+EPOCH #3	 0.61477002 (VAL: 0.57481099)
+EPOCH #4	 0.54694384 (VAL: 0.53243642)
+EPOCH #5	 0.48261766 (VAL: 0.49480104)
+EPOCH #6	 0.43626112 (VAL: 0.48006144)
+EPOCH #7	 0.41213219 (VAL: 0.43511276)
+EPOCH #8	 0.36540252 (VAL: 0.41549829)
+EPOCH #9	 0.33014127 (VAL: 0.40461752)
+EPOCH #10	 0.31063837 (VAL: 0.38408226)
+EPOCH #11	 0.28496228 (VAL: 0.38165113)
+EPOCH #12	 0.25478928 (VAL: 0.39337338)
+EPOCH #13	 0.23865842 (VAL: 0.38827594)
+EPOCH #14	 0.22217467 (VAL: 0.38622322)
+EPOCH #15	 0.20942479 (VAL: 0.37798226)
+EPOCH #16	 0.19680730 (VAL: 0.42248106)
+EPOCH #17	 0.18402551 (VAL: 0.43133044)
+EPOCH #18	 0.17070366 (VAL: 0.40440085)
+EPOCH #19	 0.16873410 (VAL: 0.40787194)
+Время обучения: 213.88 сек

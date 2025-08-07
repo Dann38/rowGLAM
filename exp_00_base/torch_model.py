@@ -41,7 +41,7 @@ class NodeGLAM(torch.nn.Module):
         self.Linear = ModuleList([Linear(linear[i], linear[i+1]) for i in range(len(linear)-1)])
 
         self.classifer = Linear(linear[-1], params['NodeClasses'])
-
+        self.softmax = torch.nn.Softmax()
     
     def forward(self, x: torch.Tensor, edge_index: torch.Tensor) -> torch.Tensor:
         if self.has_bathcnorm:
@@ -52,30 +52,34 @@ class NodeGLAM(torch.nn.Module):
 
         a = torch.cat([x, h], dim=1)
         for layer in self.Linear:
-            a = layer(self.activation(a))
+            a = self.activation(layer(a))
     
-        cl = self.classifer(self.activation(a))
+        cl = self.softmax(self.classifer(a))
         return a, cl
 
 class EdgeGLAM(torch.nn.Module):
     def __init__(self, params):
         super(EdgeGLAM, self).__init__()
         input_  = 2*params["node_featch"]+2*params["NodeLinear"][-1] + params["edge_featch"]
-        h = params["EdgeLinear"]
+        # h = params["EdgeLinear"]
         output_ = 1
         self.activation = GELU()
         self.has_bathcnorm = params['batchNormEdge'] if 'batchNormEdge' in params.keys() else True
         self.has_sigmoid = params['sigmoidEdge'] if 'sigmoidEdge' in params.keys() else False
         self.batch_norm2 = BatchNorm(input_, output_)
-        self.linear1 = Linear(input_, h[0]) 
-        self.linear2 = Linear(h[0], output_)
+        
+        linear = params['EdgeLinear']
+        linear = [input_]+linear
+        self.Linear = ModuleList([Linear(linear[i], linear[i+1]) for i in range(len(linear)-1)])
+        self.linear_end = Linear(linear[-1], output_)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if self.has_bathcnorm:
             x = self.batch_norm2(x)
-        h = self.linear1(x)
-        h = self.activation(h)
-        h = self.linear2(h)
+        h = x
+        for layer in self.Linear:
+            h = self.activation(layer(h))
+        h = self.linear_end(h)
         if self.has_sigmoid:
             h = torch.sigmoid(h)
         return torch.squeeze(h, 1)

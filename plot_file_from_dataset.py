@@ -21,13 +21,18 @@ COLORS = [
 
 LABELS = ["figure", "text", "header", "list", "table", "no_detect"]
 
+# PATH_GRAPHS_JSONS = "/home/daniil/micro_publaynet/tmp/test_file_json"
+# name_dir_files = "val"
+
+name_dir_files = "train"
+
 img = ImageModel()
 
 dataset = GLAMDataset(PATH_GRAPHS_JSONS)
 
 def plot_file(json_file):
     
-    path_file = os.path.join(PATH_PUBLAYNET, 'train', json_file['file_name'])
+    path_file = os.path.join(PATH_PUBLAYNET, name_dir_files, json_file['file_name'])
 
     img.read_from_file(path_file)
 
@@ -42,6 +47,14 @@ def plot_file(json_file):
     for data,cls in zip(json_file['rows'], json_file['true_nodes']):
         seg = ImageSegment(dict_2p=data['segment'])
         seg.plot(color=COLORS[cls if cls!=-1 else 5])
+
+    for block in json_file['blocks']:
+        try:
+            seg = ImageSegment(dict_p_size=block)
+            seg.plot(color=COLORS[block['label']], width=2)
+        except:
+            pass
+
     img.show()
 
 
@@ -51,47 +64,6 @@ def plot_file(json_file):
     plt.legend(handles=legend_elements, 
             title='Классы изображений',
             loc='upper right')
-
-
-# parser = argparse.ArgumentParser()
-# parser.add_argument('-i', type=str, nargs='?', required=True)
-# args = parser.parse_args()
-
-# def plot_file(path_pdf, class_=False):
-#     model.read_from_file(path_pdf)
-#     pdf.read_from_file(path_pdf)
-#     pdf2img.convert(pdf, img)
-#     model.extract()
-
-#     fig, (ax1, ax2)= plt.subplots(1, 2,dpi=200)
-#     ax1.set_xticks([])  # Remove x-axis ticks
-#     ax1.set_yticks([])  # Remove y-axis ticks
-#     plt.subplot(1, 2, 1)
-#     img.show()
-
-#     A = model.page_units[0].sub_model.json["A"]
-#     words = model.page_units[0].sub_model.json["words"]
-#     segs = [ImageSegment(dict_2p=w['segment']) for w in words]
-#     # for seg in segs:
-#     #     seg.plot()
-#     k = model.page_units[2].converters['json_model'].tmp_edge
-    
-#     for r, e1, e2 in zip(k,  A[0], A[1]):
-#         b1 = segs[e1]
-#         b2 = segs[e2]
-#         x0, y0 = b1.get_center()
-#         x1, y1 = b2.get_center()
-#         plt.plot([x0, x1], [y0, y1], "g" if r > 0.5 else "r")
-
-#     plt.subplot(1, 2, 2)
-#     ax2.set_xticks([])  # Remove x-axis ticks
-#     ax2.set_yticks([])  # Remove y-axis ticks
-#     img.show()
-    
-#     model.page_units[-1].sub_model.show(with_label=class_)
-
-# plot_file(args.i)
-# plt.show()
 
 class ImageViewer:
     def __init__(self, start_ind):
@@ -107,6 +79,7 @@ class ImageViewer:
         
         try:
             json_file = dataset[self.current_index]
+            print(json_file['file_name'])
             plot_file(json_file)
 
 
@@ -136,5 +109,5 @@ class ImageViewer:
 # Использование
 if __name__ == "__main__":
     # Укажите путь к вашей папке с изображениями
-    viewer = ImageViewer(0)
+    viewer = ImageViewer(171)
     plt.show()

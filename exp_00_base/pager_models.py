@@ -30,13 +30,14 @@ NODE_COEF=1
 WITH_TEXT = True
 # TYPE_GRAPH = "4N"
 EXPERIMENT_PARAMS = {
-    "node_featch": 13,
+    "node_featch": 15,
     "edge_featch": 2,
     "epochs": 20,
     "batch_size": 50,
-    "learning_rate": 0.005,
-    "Tag": [{ "in": -1, "size": 512, "out": 256, "k":3},
-            { "in": 256, "size": 128, "out": 64, "k":3}],
+    "learning_rate": 0.05,
+    "Tag":[ {'in': -1, 'size': 64, 'out': 64, 'k': 3},
+            {'in': 64, 'size': 64, 'out': 64, 'k': 3},
+            {'in': 64, 'size': 64, 'out': 8, 'k': 3}],
     "NodeLinear": [-1, 32, 16],
     "EdgeLinear": [16],
     "NodeClasses": 5,
@@ -117,8 +118,19 @@ def nodes_feature(rows):
     list_ind_vec = np.array([get_vec_list(r) for r in row_texts])
     super_vec = np.array([get_vec_supper(r) for r in row_texts])
     coord_vec = np.array([get_vec_coord(r) for r in rows])
-    nodes_feature = np.concat([coord_vec,  dot_vec, super_vec, list_ind_vec], axis=1)
+    heuristics_vec = np.array([get_vec_heuristics(r) for r in rows])
+    nodes_feature = np.concat([coord_vec,  dot_vec, super_vec, list_ind_vec, heuristics_vec], axis=1)
     return [nodes_feature.tolist()]
+
+def get_vec_heuristics(row):
+    text = row['text']
+    text_size = len(text)
+    if text_size == 0:
+        return [0, 0]
+    seg = ImageSegment(dict_2p=row['segment'])
+    m = seg.width/seg.height
+    digit_count = sum(char.isdigit() for char in text)
+    return [text_size/m, digit_count/text_size]
 
 def get_vec_supper(row_text):
     if row_text.isupper():
