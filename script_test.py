@@ -14,7 +14,7 @@ benchmark = SegDetectionBenchmark(path_dataset=PATH_TEST_DATASET,
                     path_images=PATH_TEST_IMAGES, 
                     path_pdfs=PATH_TEST_PDF,
                     path_json=PATH_TEST_JSON,
-                    save_dir="save_dir3",
+                    # save_dir="save_dir3",
                     only_seg=True,
                     count_image=50,
                     name=EXPERIMENT)

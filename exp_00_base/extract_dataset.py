@@ -20,9 +20,12 @@ def true_class_from_publaynet(blocks, rows, A):
         return 0
     
     def get_class_node(row, blocks):
+        if row.height > 20: #TODO: есть большие строки!!!!
+            return -1
         for block in blocks:
             if block.is_intersection(row):
                 return block.get_info("label")
+        
         return -1
     
     # Получение верных меток из датасета PubLayNet

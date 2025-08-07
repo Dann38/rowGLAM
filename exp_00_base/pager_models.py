@@ -32,7 +32,7 @@ WITH_TEXT = True
 EXPERIMENT_PARAMS = {
     "node_featch": 13,
     "edge_featch": 2,
-    "epochs": 50,
+    "epochs": 20,
     "batch_size": 50,
     "learning_rate": 0.005,
     "Tag": [{ "in": -1, "size": 512, "out": 256, "k":3},

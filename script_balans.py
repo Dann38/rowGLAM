@@ -26,6 +26,7 @@ def count_elem_class(path, list_class, list_class2, key, key2):
 
 def get_balans(path, list_class,list_class2, key, key2):
     counts, counts2 = count_elem_class(path,list_class,list_class2, key, key2)
+    print("count nodes:", counts, "count edges:", counts2)
     mx = max(counts)
     mx2 = max(counts2)
     balans = [mx/c for c in counts]
@@ -34,6 +35,7 @@ def get_balans(path, list_class,list_class2, key, key2):
     coef2 = len(list_class2)/sum(balans2)
     balans_norm = [coef*b for b in balans]
     balans_norm2 = [coef2*b for b in balans2]
+    
     return balans_norm, balans_norm2
 
 

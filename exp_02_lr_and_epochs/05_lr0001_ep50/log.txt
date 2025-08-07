@@ -1,0 +1,60 @@
+2025-08-07 10:49:35.845730
+DATASET INFO:
+count row: 1000
+first: dict_keys(['file_name', 'height', 'id', 'width', 'blocks', 'rows', 'A', 'nodes_feature', 'edges_feature', 'true_edges', 'true_nodes'])
+	 A:(2, 211)
+	 nodes_feature:(78, 13)
+	 edges_feature:(211, 2)
+	 true_edges:(211,)
+	 true_nodes:(78,)
+end:dict_keys(['file_name', 'height', 'id', 'width', 'blocks', 'rows', 'A', 'nodes_feature', 'edges_feature', 'true_edges', 'true_nodes'])
+	 A(2, 302)
+	 nodes_feature:(112, 13)
+	 edges_feature:(302, 2)
+	 true_edges:"(302,)
+	 true_nodes:(112,)
+
+node_featch:	13
+edge_featch:	2
+epochs:	30
+batch_size:	50
+learning_rate:	0.001
+Tag:	[{'in': -1, 'size': 512, 'out': 256, 'k': 3}, {'in': 256, 'size': 128, 'out': 64, 'k': 3}]
+NodeLinear:	[-1, 32, 16]
+EdgeLinear:	[16]
+NodeClasses:	5
+batchNormNode:	True
+batchNormEdge:	True
+seg_k:	0.5
+loss_params:	{'publaynet_imbalance': [1.57, 0.03, 0.81, 2.39, 0.18], 'edge_imbalance': 0.41, 'edge_coef': 4, 'node_coef': 1}
+EPOCH #0	 1.63410281 (VAL: 1.50988235)
+EPOCH #1	 1.45833543 (VAL: 1.31957643)
+EPOCH #2	 1.25353005 (VAL: 1.10095567)
+EPOCH #3	 1.06082973 (VAL: 0.94145308)
+EPOCH #4	 0.92960343 (VAL: 0.84265234)
+EPOCH #5	 0.84711005 (VAL: 0.78222834)
+EPOCH #6	 0.79064366 (VAL: 0.73796662)
+EPOCH #7	 0.74666558 (VAL: 0.70419937)
+EPOCH #8	 0.70975992 (VAL: 0.67617594)
+EPOCH #9	 0.67628934 (VAL: 0.65124454)
+EPOCH #10	 0.64503262 (VAL: 0.62769856)
+EPOCH #11	 0.61589824 (VAL: 0.60629976)
+EPOCH #12	 0.58767441 (VAL: 0.58705507)
+EPOCH #13	 0.56081664 (VAL: 0.56915708)
+EPOCH #14	 0.53506651 (VAL: 0.55198047)
+EPOCH #15	 0.51067646 (VAL: 0.53469168)
+EPOCH #16	 0.48811726 (VAL: 0.52024687)
+EPOCH #17	 0.46609092 (VAL: 0.50776724)
+EPOCH #18	 0.44604571 (VAL: 0.50176379)
+EPOCH #19	 0.42966083 (VAL: 0.48738059)
+EPOCH #20	 0.41394488 (VAL: 0.46771012)
+EPOCH #21	 0.39669935 (VAL: 0.46228176)
+EPOCH #22	 0.37727277 (VAL: 0.45501380)
+EPOCH #23	 0.35822018 (VAL: 0.44498416)
+EPOCH #24	 0.33757284 (VAL: 0.43150441)
+EPOCH #25	 0.31927463 (VAL: 0.42133612)
+EPOCH #26	 0.30529616 (VAL: 0.42087552)
+EPOCH #27	 0.29442437 (VAL: 0.42164033)
+EPOCH #28	 0.28611724 (VAL: 0.42510557)
+EPOCH #29	 0.28415496 (VAL: 0.42400784)
+Время обучения: 155.74 сек
