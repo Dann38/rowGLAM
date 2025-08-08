@@ -36,11 +36,14 @@ class NodeGLAM(torch.nn.Module):
         linear = params['NodeLinear']
         if linear[0] == -1:
             linear[0] = params['node_featch'] + tags[-1]['out']
+
+        classifier_linear = [linear[-1]] + params['NodeLinearClassifier']
         
         self.Tag = ModuleList([TagModule(tag) for tag in tags])
         self.Linear = ModuleList([Linear(linear[i], linear[i+1]) for i in range(len(linear)-1)])
-
-        self.classifer = Linear(linear[-1], params['NodeClasses'])
+        self.classifiers = ModuleList([Linear(classifier_linear[i], classifier_linear[i+1]) for i in range(len(classifier_linear)-1)])
+        self.end_classifier = Linear(classifier_linear[-1], params['NodeClasses'])
+        
         self.softmax = torch.nn.Softmax()
     
     def forward(self, x: torch.Tensor, edge_index: torch.Tensor) -> torch.Tensor:
@@ -53,8 +56,11 @@ class NodeGLAM(torch.nn.Module):
         a = torch.cat([x, h], dim=1)
         for layer in self.Linear:
             a = self.activation(layer(a))
-    
-        cl = self.softmax(self.classifer(a))
+        
+        cl = a
+        for clayer in self.classifiers:
+            cl = self.activation(clayer(cl))
+        cl = self.softmax(self.end_classifier(cl))
         return a, cl
 
 class EdgeGLAM(torch.nn.Module):

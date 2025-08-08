@@ -24,22 +24,23 @@ load_dotenv(override=True)
 
 PUBLAYNET_IMBALANCE=[1.57, 0.03, 0.81, 2.39, 0.18]#[2.63, 0.015, 0.946, 1.268, 0.136]
 EDGE_IMBALANCE=0.41 #0.14
-EDGE_COEF=4
-NODE_COEF=1
+EDGE_COEF=0.9
+NODE_COEF=0.1
 
 WITH_TEXT = True
 # TYPE_GRAPH = "4N"
 EXPERIMENT_PARAMS = {
     "node_featch": 15,
-    "edge_featch": 2,
+    "edge_featch": 4,
     "epochs": 20,
-    "batch_size": 50,
+    "batch_size": 10,
     "learning_rate": 0.05,
     "Tag":[ {'in': -1, 'size': 64, 'out': 64, 'k': 3},
             {'in': 64, 'size': 64, 'out': 64, 'k': 3},
             {'in': 64, 'size': 64, 'out': 8, 'k': 3}],
-    "NodeLinear": [-1, 32, 16],
-    "EdgeLinear": [16],
+    "NodeLinear": [-1, 16, 8],
+    "NodeLinearClassifier": [8],
+    "EdgeLinear": [32, 16, 8],
     "NodeClasses": 5,
     "batchNormNode": True,
     "batchNormEdge": True,
@@ -93,6 +94,8 @@ def featch_rows(pdf_name):
     pdf2rows.read_from_file(pdf_name)
     try:
         pdf2rows.extract()
+        rows:List[Row]= pdf2rows.page_units[-1].sub_model.rows
+        pdf2rows.page_units[-1].sub_model.rows = [row for row in rows if row.segment.height < 25] #TODO: del_row
         return [
             pdf2rows.page_units[-1].sub_model.to_dict()['rows'],
         ]
@@ -190,7 +193,10 @@ def edges_feature(A, rows):
     for i, j in zip(A[0], A[1]):
         r1 = ImageSegment(dict_2p= rows[i]['segment'])
         r2 = ImageSegment(dict_2p= rows[j]['segment'])
-        edges_featch.append([r1.get_angle_center(r2), r1.get_min_dist(r2)])
+        x1, y1 = r1.get_center()
+        x2, y2 = r2.get_center()
+
+        edges_featch.append([r1.get_angle_center(r2), r1.get_min_dist(r2), abs(x1-x2), abs(y1-y2)])
     # print(edges_featch)
     return [edges_featch]
    
@@ -220,8 +226,8 @@ def get_tensor_from_graph(graph):
     i = graph["A"]
     v_in = [1 for e in graph["edges_feature"]]
     y = graph["edges_feature"]
-    for yi in y:
-        yi[0] = 1.0 if yi[0] > 0.86 else 0.0
+    # for yi in y:
+    #     yi[0] = 1.0 if yi[0] > 0.86 else 0.0
     x = graph["nodes_feature"]
     N = len(x)
     
@@ -302,18 +308,18 @@ class Json2Blocks(BaseConverter):
         if len(output_model.blocks) == 0:
             return 
         
-        index_blocks = merge_segment([block.segment for block in output_model.blocks])
-        count_block = max(index_blocks)+1
-        new_blocks = []
-        for i in range(count_block):
-            segment = ImageSegment(0, 0, 1, 1)
-            blocks = [output_model.blocks[k] for k, j in enumerate(index_blocks) if i==j]
-            segment.set_segment_max_segments([b.segment for b in blocks])
-            block = Block(segment.get_segment_2p())
-            block.rows = [r for b in blocks for r in b.rows]
-            # block.sort_words()
-            new_blocks.append(block)
-        output_model.blocks = new_blocks
+        # index_blocks = merge_segment([block.segment for block in output_model.blocks])
+        # count_block = max(index_blocks)+1
+        # new_blocks = []
+        # for i in range(count_block):
+        #     segment = ImageSegment(0, 0, 1, 1)
+        #     blocks = [output_model.blocks[k] for k, j in enumerate(index_blocks) if i==j]
+        #     segment.set_segment_max_segments([b.segment for b in blocks])
+        #     block = Block(segment.get_segment_2p())
+        #     block.rows = [r for b in blocks for r in b.rows]
+        #     # block.sort_words()
+        #     new_blocks.append(block)
+        # output_model.blocks = new_blocks
         self.set_label_output_block(output_model, rows, graph)
     
     

@@ -75,7 +75,10 @@ def print_exp(dir_):
 
 print_exp('exp_01_balans')
 print_exp('exp_02_lr_and_epochs')
-
 print_exp('exp_03_K_count_tag')
 print_exp('exp_04_neural_size')
 print_exp('exp_05_node_linear')
+print_exp('exp_06_batch_epochs')
+print_exp('exp_07_edge_linear')
+print_exp('exp_08_loss')
+print_exp('exp_09_linear_cl')

@@ -127,8 +127,8 @@ def get_tensor_from_graph(graph):
     i = graph["A"]
     # v_in = [1 for e in graph["edges_feature"]]
     y = graph["edges_feature"]
-    for yi in y:
-        yi[0] = 1.0 if yi[0] > 0.86 else 0.0
+    # for yi in y:
+    #     yi[0] = 1.0 if yi[0] > 0.86 else 0.0
     v_true = graph["true_edges"]
     n_true = [class_node(n) for n in graph["true_nodes"]]
     x = graph["nodes_feature"]
